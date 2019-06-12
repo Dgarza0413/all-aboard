@@ -5,10 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <link rel="stylesheet" href="assets/css/reset.css"> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
     <title>All Aboard</title>
 </head>
+
+<style>
+    body {
+        margin: 0;
+    }
+</style>
 
 <body>
     <header>
@@ -19,7 +25,7 @@
             update all???
         </nav>
     </header>
-    <section>
+    <section id="results">
         <h1>Current Train Schedule</h1>
         <table>
             <tr>
@@ -46,9 +52,9 @@
             <label for="">Destination</label>
             <input id="destination" type="text">
             <label for="">First Train Time (military time)</label>
-            <input id="first-time" type="text">
+            <input id="first-time" type="number">
             <label for="">Frequency (min)</label>
-            <input id="frequency" type="text">
+            <input id="frequency" type="number">
             <button id="submit-click" type="submit">Submit</button>
         </form>
     </section id="results">
@@ -85,11 +91,40 @@
         //variables
         var database = firebase.database();
 
+        var trainName = ""
+        var destination = ""
+        var firstTime = ""
+        var frequency = ""
+
+        // we need to read a static snapshot of the contents at a given path
+        database.ref().on("value", function (snapshot) {
+            console.log(snapshot)
+
+            trainName = snapshot.val().trainName;
+            destination = snapshot.val().destination;
+            firstTime = snapshot.val().fristTime;
+            frequency = snapshot.val().frequency;
+
+            console.log(trainName)
+            console.log(destination)
+            console.log(firstTime)
+            console.log(frequency)
+
+            $("#train-name-header").text(trainName)
+            $("#destination-header").text(destination)
+            $("#firstTime-header").text(firstTime)
+            $("#frequency-header").text(frequency)
+
+        }, function (errorObject) {
+            console.log("the read failed: " + errorObject.code);
+        });
+
+
         $("#submit-click").on("click", function () {
-            var trainName = $("#train-name").val().trim();
-            var destination = $("#destination").val().trim();
-            var firstTime = $("#first-time").val().trim();
-            var frequency = $("#frequency").val().trim();
+            trainName = $("#train-name").val().trim();
+            destination = $("#destination").val().trim();
+            firstTime = $("#first-time").val().trim();
+            frequency = $("#frequency").val().trim();
 
             $("#train-name-header").append(trainName)
             $("#destination-header").append(destination)
@@ -97,14 +132,31 @@
             $("#frequency-header").append(frequency)
 
 
-            console.log(trainName)
 
-            database.ref().set({
-                trainInfo: trainName,
-                // destinationItem: destination,
-                // firstTimeItem: firstTime,
-                // frequencyItem: frequency
-            })
+            // should a use a function to write new train info???
+            writeTrainInfo()
+
+            function writeTrainInfo() {
+                database.ref().set({
+                    trainName: trainName,
+                    destination: destination,
+                    firstTime: firstTime,
+                    frequency: frequency
+                })
+            }
+
+            console.log(trainName)
+            console.log(destination)
+            console.log(firstTime)
+            console.log(frequency)
+
+
+            // database.ref().set({
+            //     trainName: trainName,
+            //     destinationItem: destination,
+            //     firstTimeItem: firstTime,
+            //     frequencyItem: frequency
+            // })
 
         });
 
