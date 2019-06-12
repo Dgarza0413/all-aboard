@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
     <title>All Aboard</title>
 </head>
 
@@ -12,17 +14,45 @@
     <header>
         <nav>
             <h1>Navbar</h1>
+            my destinations
+            remove trains
+            update all???
         </nav>
     </header>
+    <section>
+        <h1>Current Train Schedule</h1>
+        <table>
+            <tr>
+                <th>Train Name</th>
+                <th>Destination</th>
+                <th>Frequency(Min)</th>
+                <th>Next Arrival</th>
+                <th>Minutes Away</th>
+            </tr>
+            <tr id="table-row">
+                <th id="train-name-header"></th>
+                <th id="destination-header"></th>
+                <th id="first-time-header"></th>
+                <th id="frequency-header"></th>
+                <th id=""></th>
+            </tr>
+        </table>
+    </section>
     <section id="form">
         <form action="">
-            <label for="">Name</label>
-            <input type="text">
+            <h1>Add Train</h1>
+            <label for="">Train Name</label>
+            <input id="train-name" type="text">
+            <label for="">Destination</label>
+            <input id="destination" type="text">
+            <label for="">First Train Time (military time)</label>
+            <input id="first-time" type="text">
+            <label for="">Frequency (min)</label>
+            <input id="frequency" type="text">
+            <button id="submit-click" type="submit">Submit</button>
         </form>
     </section id="results">
-    <section>
-        results go in here
-    </section>
+
     <footer>
         footer and trailing information goes here
     </footer>
@@ -32,6 +62,10 @@
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#config-web-app -->
+
+    <!-- Specific Firebase products we want -->
+    <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+
 
     <script>
         // Your web app's Firebase configuration
@@ -46,6 +80,38 @@
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+
+
+        //variables
+        var database = firebase.database();
+
+        $("#submit-click").on("click", function () {
+            var trainName = $("#train-name").val().trim();
+            var destination = $("#destination").val().trim();
+            var firstTime = $("#first-time").val().trim();
+            var frequency = $("#frequency").val().trim();
+
+            $("#train-name-header").append(trainName)
+            $("#destination-header").append(destination)
+            $("#first-time-header").append(firstTime)
+            $("#frequency-header").append(frequency)
+
+
+            console.log(trainName)
+
+            database.ref().set({
+                trainInfo: trainName,
+                // destinationItem: destination,
+                // firstTimeItem: firstTime,
+                // frequencyItem: frequency
+            })
+
+        });
+
+        //consider what a train schedule must have
+        //first we must save all train schedules that works like a todo list
+        //seems like i will have to incorporate an object of arrays to accurate couple information together
+
     </script>
 </body>
 
