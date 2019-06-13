@@ -15,13 +15,11 @@
 <style>
     body {
         margin: 0;
-        background-color: grey;
+        background-color: darkgrey;
     }
 
     .timeline {
         position: relative;
-        /* max-width: 1200px;
-        margin: 0 auto; */
     }
 
     /* use the after class to place the line after blank content */
@@ -48,9 +46,9 @@
         position: absolute;
         width: 25px;
         height: 25px;
-        right: -17px;
+        right: -24px;
         background-color: white;
-        border: 4 px solid black;
+        border: 4px solid black;
         top: 15px;
         border-radius: 50%;
         z-index: 1;
@@ -83,68 +81,130 @@
         border-color: transparent transparent transparent white;
     }
 
-    .right::after {
-        left: -16px;
-    }
-
     .content {
         padding: 20px 30px;
         background-color: white;
         position: relative;
         border-radius: 10px;
     }
+
+    .button-group {
+        position: fixed;
+        right: 40px;
+        z-index: 2;
+    }
+
+    button {
+        z-index: 2;
+        padding: 10px;
+        border: none;
+        border-radius: 25px;
+    }
+
+    .train-info {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    #add-trip {
+        background-color: green;
+        color: white;
+    }
+
+    #clear-trip {
+        background-color: red;
+        color: white;
+    }
+
+    #close-click {
+        display: none;
+    }
+
+    .flex-box-column {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #train-form {
+        display: none;
+        position: fixed;
+        padding: 30px;
+        right: 40px;
+        bottom: 40px;
+        background-color: white;
+        box-shadow: 5px 10px darkgray;
+    }
+
+    label {
+        margin: 10px 0px;
+        font-size: 20px;
+    }
+
+    input {
+        font-size: 16px;
+        padding: 10px 10px;
+        border-radius: 25px;
+        border: 1px solid lightgray;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    #submit-click {
+        margin: 5px 0px;
+        background-color: green;
+    }
+
+    #close-click {
+        margin: 5px 0px;
+        background-color: red;
+    }
+
+    #all-aboard-title {
+        font-size: 40px;
+        /* position: fixed; */
+        left: 25px;
+        top: 25px;
+    }
 </style>
 
 <body>
     <header>
         <nav>
-            <h1>Navbar</h1>
-            my destinations
-            remove trains
-            update all???
+            <div id="all-aboard-title">
+                <h1>All Aboard</h1>
+            </div>
             <div class="button-group">
                 <button id="add-trip">Add Trip</button>
-                <!-- i would like this button to toggle x's on trip containers -->
-                <!-- using for each to clear. -->
                 <button id="clear-trip">Clear Trip</button>
             </div>
         </nav>
     </header>
     <section id="results">
-        <div class="timeline">
-            <h1>Current Train Schedule</h1>
-            <!-- <div class="container left">
-                <div class="content">
+        <h1>Current Train Schedule</h1>
+        <div class="timeline"></div>
+    </section>
+    <section>
+        <div id="train-form">
+            <form action="">
+                <div class="flex-box-column">
+                    <h1>Track your Train</h1>
+                    <label for="">Train Name</label>
+                    <input id="train-name" type="text" placeholder="midnight train.." required>
+                    <label for="">Destination</label>
+                    <input id="destination" type="text" placeholder="" required>
+                    <label for="">First Train Time (military time)</label>
+                    <input id="first-time" type="number" required>
+                    <label for="">Frequency (min)</label>
+                    <input id="frequency" type="number" required>
+                    <button id="submit-click" type="submit">Submit</button>
+                    <button id="close-click">Close</button>
                 </div>
-            </div>
-            <div class="container right">
-                <div class="content">
-                </div>
-            </div> -->
+            </form>
         </div>
     </section>
-    <section id="form">
-        <form action="">
-            <h1>Add Train</h1>
-            <label for="">Train Name</label>
-            <input id="train-name" type="text">
-            <label for="">Destination</label>
-            <input id="destination" type="text">
-            <label for="">First Train Time (military time)</label>
-            <input id="first-time" type="number">
-            <label for="">Frequency (min)</label>
-            <input id="frequency" type="number">
-            <button id="submit-click" type="submit">Submit</button>
-        </form>
-    </section id="results">
-
     <footer>
-        <div class="button-group">
-            <button id="add-trip">Add Trip</button>
-            <!-- i would like this button to toggle x's on trip containers -->
-            <!-- using for each to clear. -->
-            <button id="clear-trip">Clear Trip</button>
-        </div>
     </footer>
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
@@ -217,7 +277,6 @@
             // should a use a function to write new train info???
             // writeTrainInfo()
 
-            // function writeTrainInfo() {
             database.ref().push({
                 trainName: trainName,
                 destination: destination,
@@ -225,7 +284,6 @@
                 frequency: frequency,
                 dateAdded: firebase.database.ServerValue.TIMESTAMP
             })
-            // }
 
             console.log(trainName)
             console.log(destination)
@@ -246,10 +304,16 @@
             var newContainer = $("<div>")
             var newContent = $("<div>")
 
-            newTrainInfo.addClass("newClass")
-
+            //empty containers
+            newTrainInfo.addClass("train-info")
             newContainer.addClass("container arrow")
             newContent.addClass("content")
+
+            //database containers
+            newTrainName.addClass("train-name-data")
+            newDestination.addClass("destination-data")
+            newFirstTime.addClass("first-time-data")
+            newFrequency.addClass("frequency-data")
 
             console.log(sv.trainName)
             console.log(sv.destination)
@@ -257,29 +321,36 @@
             console.log(sv.frequency)
 
             // Html to reflect
-            // $("#train-name-header").append(sv.trainName)
-            // $("#train-name-header").append(newTrainName)
-            // $("#destination-header").append(sv.destination)
-            // $("#first-time-header").append(sv.firstTime)
-            // $("#frequency-header").append(sv.frequency)
-
-            // populates all containers with class name content
-            // $(".content").append(newTrainName)
-            // $(".content").append(newDestination)
-            // $(".content").append(newFirstTime)
-            // $(".content").append(newFrequency)
-
-
             $(".timeline").append(newContainer)
             newContainer.append(newContent)
             newContent.append(newTrainInfo)
-            newTrainInfo.append(newTrainName)
+
+            newTrainName.prepend("<p>Train Name:</p>")
+            newTrainInfo.html(newTrainName)
+
+            newDestination.prepend("<p>Destination</p>")
             newTrainInfo.append(newDestination)
+
+            newFirstTime.prepend("<p>First Time</p>")
             newTrainInfo.append(newFirstTime)
+
+            newFrequency.prepend("<p>Frequency</p>")
             newTrainInfo.append(newFrequency)
+
         }, function (errorObject) {
             console.log("Errors handled: " + errorObject.code);
         });
+
+        $("#add-trip").on("click", function () {
+            $("#close-click").show()
+            $("#train-form").show()
+            console.log("A popup form happens")
+        })
+
+        $("#close-click").on("click", function () {
+            console.log("a form closes")
+        })
+
 
 
         //consider what a train schedule must have
