@@ -20,8 +20,8 @@
 
     .timeline {
         position: relative;
-        max-width: 1200px;
-        margin: 0 auto;
+        /* max-width: 1200px;
+        margin: 0 auto; */
     }
 
     /* use the after class to place the line after blank content */
@@ -40,7 +40,7 @@
         padding: 10px 40px;
         position: relative;
         background-color: inherit;
-        width: 44%;
+        width: 44vw;
     }
 
     .container::after {
@@ -56,15 +56,21 @@
         z-index: 1;
     }
 
-    .left {
-        left: 0;
+    /* consider nth child differentiate */
+
+    .container:nth-child(even) {
+        left: 0%;
     }
 
-    .right {
-        left: 50%
+    .container:nth-child(odd) {
+        left: 50%;
     }
 
-    .left::before {
+    .container:nth-child(odd)::after {
+        left: -16px;
+    }
+
+    .arrow::before {
         content: " ";
         height: 0;
         position: absolute;
@@ -85,7 +91,7 @@
         padding: 20px 30px;
         background-color: white;
         position: relative;
-        border-radius: 6px;
+        border-radius: 10px;
     }
 </style>
 
@@ -107,32 +113,14 @@
     <section id="results">
         <div class="timeline">
             <h1>Current Train Schedule</h1>
-            <div class="container left">
+            <!-- <div class="container left">
                 <div class="content">
-                    <table>
-                        <tr id="table-row">
-                            <th id="train-name-header"></th>
-                            <th id="destination-header"></th>
-                            <th id="first-time-header"></th>
-                            <th id="frequency-header"></th>
-                            <!-- <th id=""></th> -->
-                        </tr>
-                    </table>
                 </div>
             </div>
             <div class="container right">
                 <div class="content">
-                    <table>
-                        <tr id="table-row">
-                            <th id="train-name-header"></th>
-                            <th id="destination-header"></th>
-                            <th id="first-time-header"></th>
-                            <th id="frequency-header"></th>
-                            <!-- <th id=""></th> -->
-                        </tr>
-                    </table>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
     <section id="form">
@@ -183,7 +171,6 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
-
         //variables
         var database = firebase.database();
 
@@ -222,39 +209,78 @@
             firstTime = $("#first-time").val().trim();
             frequency = $("#frequency").val().trim();
 
-            $("#train-name-header").append(trainName)
-            $("#destination-header").append(destination)
-            $("#first-time-header").append(firstTime)
-            $("#frequency-header").append(frequency)
-
-
+            $("#train-name-header").text(trainName)
+            $("#destination-header").text(destination)
+            $("#first-time-header").text(firstTime)
+            $("#frequency-header").text(frequency)
 
             // should a use a function to write new train info???
-            writeTrainInfo()
+            // writeTrainInfo()
 
-            function writeTrainInfo() {
-                database.ref().set({
-                    trainName: trainName,
-                    destination: destination,
-                    firstTime: firstTime,
-                    frequency: frequency
-                })
-            }
+            // function writeTrainInfo() {
+            database.ref().push({
+                trainName: trainName,
+                destination: destination,
+                firstTime: firstTime,
+                frequency: frequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            })
+            // }
 
             console.log(trainName)
             console.log(destination)
             console.log(firstTime)
             console.log(frequency)
 
-
-            // database.ref().set({
-            //     trainName: trainName,
-            //     destinationItem: destination,
-            //     firstTimeItem: firstTime,
-            //     frequencyItem: frequency
-            // })
-
         });
+
+        // database changes using child_added
+        database.ref().on("child_added", function (snapshot) {
+            var sv = snapshot.val();
+
+            var newTrainName = $("<div>").text(sv.trainName)
+            var newDestination = $("<div>").text(sv.destination)
+            var newFirstTime = $("<div>").text(sv.firstTime)
+            var newFrequency = $("<div>").text(sv.frequency)
+            var newTrainInfo = $("<div>")
+            var newContainer = $("<div>")
+            var newContent = $("<div>")
+
+            newTrainInfo.addClass("newClass")
+
+            newContainer.addClass("container arrow")
+            newContent.addClass("content")
+
+            console.log(sv.trainName)
+            console.log(sv.destination)
+            console.log(sv.firstTime)
+            console.log(sv.frequency)
+
+            // Html to reflect
+            // $("#train-name-header").append(sv.trainName)
+            // $("#train-name-header").append(newTrainName)
+            // $("#destination-header").append(sv.destination)
+            // $("#first-time-header").append(sv.firstTime)
+            // $("#frequency-header").append(sv.frequency)
+
+            // populates all containers with class name content
+            // $(".content").append(newTrainName)
+            // $(".content").append(newDestination)
+            // $(".content").append(newFirstTime)
+            // $(".content").append(newFrequency)
+
+
+            $(".timeline").append(newContainer)
+            newContainer.append(newContent)
+            newContent.append(newTrainInfo)
+            newTrainInfo.append(newTrainName)
+            newTrainInfo.append(newDestination)
+            newTrainInfo.append(newFirstTime)
+            newTrainInfo.append(newFrequency)
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject.code);
+        });
+
 
         //consider what a train schedule must have
         //first we must save all train schedules that works like a todo list
