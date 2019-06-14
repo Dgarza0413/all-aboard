@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="assets/css/reset.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/05f187210c.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 
@@ -14,6 +16,7 @@
 
 <style>
     body {
+        font-family: 'Roboto', sans-serif;
         margin: 0;
         background-color: darkgrey;
     }
@@ -68,7 +71,7 @@
         left: -16px;
     }
 
-    .arrow::before {
+    .arrow:nth-child(even)::before {
         content: " ";
         height: 0;
         position: absolute;
@@ -77,9 +80,24 @@
         z-index: 1;
         right: 30px;
         border: medium solid white;
-        border-width: 10px o 10px 10px;
+        border-width: 10px 0px 10px 10px;
         border-color: transparent transparent transparent white;
     }
+
+    .arrow:nth-child(odd)::before {
+        content: " ";
+        height: 0;
+        position: absolute;
+        top: 22px;
+        width: 0;
+        z-index: 1;
+        left: 30px;
+        border: medium solid white;
+        border-width: 10px 10px 10px 0px;
+        border-color: transparent white transparent transparent;
+    }
+
+
 
     .content {
         padding: 20px 30px;
@@ -173,11 +191,12 @@
     <header>
         <nav>
             <div id="all-aboard-title">
-                <h1>All Aboard</h1>
+                <h1>All Aboard <i class="fas fa-train"></i></h1>
             </div>
             <div class="button-group">
-                <button id="add-trip">Add Trip</button>
-                <button id="clear-trip">Clear Trip</button>
+                <button id="add-trip">Add Trip <i class="fas fa-plus"></i></button>
+                <button id="clear-trip">Clear Trip <i class="fas fa-trash-alt"></i></button>
+                <i class="fas fa-clock"></i>
             </div>
         </nav>
     </header>
@@ -190,14 +209,14 @@
             <form action="">
                 <div class="flex-box-column">
                     <h1>Track your Train</h1>
-                    <label for="">Train Name</label>
-                    <input id="train-name" type="text" placeholder="midnight train.." required>
-                    <label for="">Destination</label>
-                    <input id="destination" type="text" placeholder="" required>
-                    <label for="">First Train Time (military time)</label>
-                    <input id="first-time" type="number" required>
-                    <label for="">Frequency (min)</label>
-                    <input id="frequency" type="number" required>
+                    <label for=""><i class="fas fa-subway"></i> Train Name</label>
+                    <input id="train-name" type="text" placeholder="midnight train..">
+                    <label for=""><i class="fas fa-suitcase-rolling"></i> Destination</label>
+                    <input id="destination" type="text" placeholder="">
+                    <label for=""><i class="fas fa-calendar-check"></i> First Train Time (24:00)</label>
+                    <input id="first-time" type="number">
+                    <label for=""><i class="fas fa-clock"></i> Frequency</label>
+                    <input id="frequency" type="number">
                     <button id="submit-click" type="submit">Submit</button>
                     <button id="close-click">Close</button>
                 </div>
@@ -248,10 +267,17 @@
             firstTime = snapshot.val().fristTime;
             frequency = snapshot.val().frequency;
 
-            console.log(trainName)
-            console.log(destination)
-            console.log(firstTime)
-            console.log(frequency)
+            // var frequencyMoment = moment(frequency)
+            // var firstTimeMoment = moment(firstTime)
+
+
+            // for testing purposes
+            // console.log(trainName)
+            // console.log(destination)
+            // console.log(firstTime)
+            // console.log(frequency)
+            // console.log("firstTime moment produces: " + firstTimeMoment)
+            // console.log("frequency moment produces: " + frequencyMoment)
 
             $("#train-name-header").text(trainName)
             $("#destination-header").text(destination)
@@ -262,7 +288,7 @@
             console.log("the read failed: " + errorObject.code);
         });
 
-
+        // submit values placed within the modal
         $("#submit-click").on("click", function () {
             trainName = $("#train-name").val().trim();
             destination = $("#destination").val().trim();
@@ -274,9 +300,14 @@
             $("#first-time-header").text(firstTime)
             $("#frequency-header").text(frequency)
 
-            // should a use a function to write new train info???
-            // writeTrainInfo()
 
+            // var frequencyMoment = moment(frequency)
+            // var firstTimeMoment = moment(firstTime)
+
+            // console.log("firstTime moment produces: " + firstTimeMoment)
+            // console.log("frequency moment produces: " + frequencyMoment)
+
+            // interact with the firebase and push data into variables
             database.ref().push({
                 trainName: trainName,
                 destination: destination,
@@ -285,10 +316,11 @@
                 dateAdded: firebase.database.ServerValue.TIMESTAMP
             })
 
-            console.log(trainName)
-            console.log(destination)
-            console.log(firstTime)
-            console.log(frequency)
+            // testing purposes
+            // console.log(trainName)
+            // console.log(destination)
+            // console.log(firstTime)
+            // console.log(frequency)
 
         });
 
@@ -296,6 +328,9 @@
         database.ref().on("child_added", function (snapshot) {
             var sv = snapshot.val();
 
+            // we have to create all of the divs and elements within this area
+            // to populate in our app
+            var trainIcon = $("<i>")
             var newTrainName = $("<div>").text(sv.trainName)
             var newDestination = $("<div>").text(sv.destination)
             var newFirstTime = $("<div>").text(sv.firstTime)
@@ -303,40 +338,76 @@
             var newTrainInfo = $("<div>")
             var newContainer = $("<div>")
             var newContent = $("<div>")
+            var timeArrival = $("<div>")
+            // .text(displayNextTrain)
 
             //empty containers
             newTrainInfo.addClass("train-info")
             newContainer.addClass("container arrow")
             newContent.addClass("content")
+            trainIcon.addClass("fas fa-train fa-2x")
 
             //database containers
             newTrainName.addClass("train-name-data")
             newDestination.addClass("destination-data")
             newFirstTime.addClass("first-time-data")
             newFrequency.addClass("frequency-data")
+            timeArrival.addClass("time-arrival")
 
-            console.log(sv.trainName)
-            console.log(sv.destination)
-            console.log(sv.firstTime)
-            console.log(sv.frequency)
+            //testing purposes
+            // console.log(sv.trainName)
+            // console.log(sv.destination)
+            // console.log(sv.firstTime)
+            // console.log(sv.frequency)
+
+
+            //painstaking way of converting time to remindertime till arrival
+            var frequencyMoment = sv.frequency
+            var firstTimeMoment = sv.firstTime
+            var timeConverted = moment(firstTimeMoment, "HH:mm").subtract(1, "years")
+            var currentTime = moment();
+            var diffTime = moment().diff(moment(timeConverted), "minutes");
+            var freqRemainder = diffTime % frequencyMoment;
+            var minNextTrain = frequencyMoment - freqRemainder;
+            var ltNextTrain = moment().add(minNextTrain, "minutes")
+            var displayNextTrain = moment(ltNextTrain).format("LT")
+
+
+            // testing purposes
+            // console.log("firstTime moment produces: " + firstTimeMoment)
+            // console.log("frequency moment produces: " + frequencyMoment)
+            // console.log("time converted: " + timeConverted)
+            // console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+            // console.log("difference in time: " + diffTime)
+            // console.log(freqRemainder)
+            // console.log("minutes till train: " + minNextTrain)
+            // // console.log("arrival time: " + moment(ltNextTrain).format("LT"))
+            // console.log("arrival time: " + displayNextTrain)
+
 
             // Html to reflect
             $(".timeline").append(newContainer)
             newContainer.append(newContent)
+
             newContent.append(newTrainInfo)
+            // newContent.append(trainIcon)
 
             newTrainName.prepend("<p>Train Name:</p>")
             newTrainInfo.html(newTrainName)
+            newTrainInfo.prepend(trainIcon)
 
-            newDestination.prepend("<p>Destination</p>")
+            newDestination.prepend("<p>Destination:</p>")
             newTrainInfo.append(newDestination)
 
-            newFirstTime.prepend("<p>First Time</p>")
+            newFirstTime.prepend("<p>First Time:</p>")
             newTrainInfo.append(newFirstTime)
 
-            newFrequency.prepend("<p>Frequency</p>")
+            newFrequency.prepend("<p>Frequency:</p>")
             newTrainInfo.append(newFrequency)
 
+            timeArrival.prepend("<p>Time arrival</p>")
+            timeArrival.append(displayNextTrain)
+            newTrainInfo.append(timeArrival)
         }, function (errorObject) {
             console.log("Errors handled: " + errorObject.code);
         });
@@ -349,6 +420,7 @@
 
         $("#close-click").on("click", function () {
             console.log("a form closes")
+            $("#train-form").hide()
         })
 
 
@@ -356,6 +428,9 @@
         //consider what a train schedule must have
         //first we must save all train schedules that works like a todo list
         //seems like i will have to incorporate an object of arrays to accurate couple information together
+
+
+        //use an if statement to prevent the submit form from submitting
 
     </script>
 </body>
