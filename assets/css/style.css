@@ -1,0 +1,213 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #474e5d;
+}
+
+.timeline {
+    position: relative;
+}
+
+/* use the after class to place the line after blank content */
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background-color: white;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;
+}
+
+.container {
+    padding: 10px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 50vw;
+}
+
+.container::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    right: -16px;
+    background-color: white;
+    border: 4px solid orange;
+    top: 15px;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* consider nth child differentiate */
+
+/* .container:nth-child(even) {
+    left: 0%;
+} */
+/* .container::after {
+    left: 0%;
+} */
+
+/* .container:nth-child(odd) {
+    left: 50%;
+} */
+
+/* .container:nth-child(odd)::after {
+    left: -16px;
+} */
+
+.arrow::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    top: 22px;
+    width: 0;
+    z-index: 1;
+    right: 30px;
+    border: medium solid white;
+    border-width: 10px 0px 10px 10px;
+    border-color: transparent transparent transparent white;
+}
+
+/* .arrow:nth-child(even)::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    top: 22px;
+    width: 0;
+    z-index: 1;
+    right: 30px;
+    border: medium solid white;
+    border-width: 10px 0px 10px 10px;
+    border-color: transparent transparent transparent white;
+}
+
+.arrow:nth-child(odd)::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    top: 22px;
+    width: 0;
+    z-index: 1;
+    left: 30px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0px;
+    border-color: transparent white transparent transparent;
+} */
+
+.content {
+    padding: 20px 30px;
+    background-color: white;
+    position: relative;
+    border-radius: 10px;
+}
+
+.button-group {
+    display: none;
+    margin: 20px 40px;
+    right: 40px;
+    z-index: 2;
+}
+
+button {
+    z-index: 2;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+}
+
+.train-info {
+    display: flex;
+    justify-content: space-around;
+}
+
+#add-trip {
+    background-color: green;
+    color: white;
+}
+
+#clear-trip {
+    background-color: red;
+    color: white;
+}
+
+#close-click {
+    display: none;
+}
+
+.flex-box-column {
+    display: flex;
+    flex-direction: column;
+}
+
+#train-form {
+    /* display: none; */
+    position: fixed;
+    padding: 30px;
+    right: 30vh;
+    bottom: 20vh;
+    background-color: white;
+    box-shadow: 10px 15px darkgray;
+}
+
+label {
+    margin: 10px 0px;
+    font-size: 20px;
+}
+
+input {
+    font-size: 16px;
+    padding: 10px 10px;
+    border-radius: 25px;
+    border: 1px solid lightgray;
+}
+
+input:focus {
+    outline: none;
+}
+
+#submit-click {
+    margin: 5px 0px;
+    background-color: green;
+}
+
+#close-click {
+    margin: 5px 0px;
+    background-color: red;
+}
+
+#all-aboard-title {
+    font-family: 'Comfortaa', cursive;
+    font-size: 60px;
+    text-align: center;
+    margin: 35px 0px;
+    left: 25px;
+    top: 25px;
+    color: white;
+}
+
+@media screen and (max-width: 1050px) {
+    .timeline::after {
+        left: 95%
+    }
+
+    .container {
+        width: 95vw;
+    }
+
+    #train-form {
+        display: none;
+        right: 25%;
+        bottom: 20vh;
+    }
+
+    .button-group {
+        display: inherit;
+    }
+
+}
