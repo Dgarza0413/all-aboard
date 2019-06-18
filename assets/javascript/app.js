@@ -100,6 +100,7 @@ database.ref().on("child_added", function (snapshot) {
     var newContainer = $("<div>")
     var newContent = $("<div>")
     var timeArrival = $("<div>")
+    var minTillArrival = $("<div>")
     // .text(displayNextTrain)
 
     //empty containers
@@ -169,6 +170,10 @@ database.ref().on("child_added", function (snapshot) {
     timeArrival.prepend("<p>Time arrival</p>")
     timeArrival.append(displayNextTrain)
     newTrainInfo.append(timeArrival)
+
+    minTillArrival.prepend("<p>Minutes Till Arrival")
+    minTillArrival.append(minNextTrain)
+    newTrainInfo.append(minTillArrival)
 }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code);
 });
