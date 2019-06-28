@@ -28,10 +28,6 @@ database.ref().on("value", function (snapshot) {
     firstTime = snapshot.val().fristTime;
     frequency = snapshot.val().frequency;
 
-    // var frequencyMoment = moment(frequency)
-    // var firstTimeMoment = moment(firstTime)
-
-
     // for testing purposes
     // console.log(trainName)
     // console.log(destination)
@@ -61,10 +57,6 @@ $("#submit-click").on("click", function () {
     $("#first-time-header").text(firstTime)
     $("#frequency-header").text(frequency)
 
-
-    // var frequencyMoment = moment(frequency)
-    // var firstTimeMoment = moment(firstTime)
-
     // console.log("firstTime moment produces: " + firstTimeMoment)
     // console.log("frequency moment produces: " + frequencyMoment)
 
@@ -88,9 +80,6 @@ $("#submit-click").on("click", function () {
 // database changes using child_added
 database.ref().on("child_added", function (snapshot) {
     var sv = snapshot.val();
-
-    // we have to create all of the divs and elements within this area
-    // to populate in our app
     var trainIcon = $("<i>")
     var newTrainName = $("<div>").text(sv.trainName)
     var newDestination = $("<div>").text(sv.destination)
@@ -101,7 +90,6 @@ database.ref().on("child_added", function (snapshot) {
     var newContent = $("<div>")
     var timeArrival = $("<div>")
     var minTillArrival = $("<div>")
-    // .text(displayNextTrain)
 
     //empty containers
     newTrainInfo.addClass("train-info")
@@ -127,7 +115,6 @@ database.ref().on("child_added", function (snapshot) {
     var frequencyMoment = sv.frequency
     var firstTimeMoment = sv.firstTime
     var timeConverted = moment(firstTimeMoment, "HH:mm").subtract(1, "years")
-    var currentTime = moment();
     var diffTime = moment().diff(moment(timeConverted), "minutes");
     var freqRemainder = diffTime % frequencyMoment;
     var minNextTrain = frequencyMoment - freqRemainder;
@@ -143,16 +130,12 @@ database.ref().on("child_added", function (snapshot) {
     // console.log("difference in time: " + diffTime)
     // console.log(freqRemainder)
     // console.log("minutes till train: " + minNextTrain)
-    // // console.log("arrival time: " + moment(ltNextTrain).format("LT"))
-    // console.log("arrival time: " + displayNextTrain)
-
 
     // Html to reflect
     $(".timeline").append(newContainer)
     newContainer.append(newContent)
 
     newContent.append(newTrainInfo)
-    // newContent.append(trainIcon)
 
     newTrainName.prepend("<p>Train Name:</p>")
     newTrainInfo.html(newTrainName)
@@ -188,12 +171,3 @@ $("#close-click").on("click", function () {
     console.log("a form closes")
     $("#train-form").hide()
 })
-
-
-
-//consider what a train schedule must have
-//first we must save all train schedules that works like a todo list
-//seems like i will have to incorporate an object of arrays to accurate couple information together
-
-
-//use an if statement to prevent the submit form from submitting
