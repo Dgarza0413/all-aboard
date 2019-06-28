@@ -121,7 +121,6 @@ database.ref().on("child_added", function (snapshot) {
     var ltNextTrain = moment().add(minNextTrain, "minutes")
     var displayNextTrain = moment(ltNextTrain).format("LT")
 
-
     // testing purposes
     // console.log("firstTime moment produces: " + firstTimeMoment)
     // console.log("frequency moment produces: " + frequencyMoment)
